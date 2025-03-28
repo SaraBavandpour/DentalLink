@@ -1,44 +1,11 @@
 from django.db import models
 
-# Create your models here.
-import uuid
-#from mongoengine import Document, fields
+from .UserModels import PatientRecord
 
-from django.db import models
 
-# Create your models here.
-
-class PatientRecord(models.Model):
-    patient_id = models.UUIDField(
-        primary_key=True,  # می‌توانید آن را به عنوان کلید اصلی تنظیم کنید
-        default=uuid.uuid4,  # مقدار پیش‌فرض که UUID به صورت خودکار تولید می‌شود
-        editable=False  # کاربر نمی‌تواند این فیلد را تغییر دهد
-    )
-    full_name = models.CharField(max_length=255)
-    date_of_birth = models.DateField()
-    gender = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female')])
-    contact_number = models.CharField(max_length=15)
-    email = models.EmailField(null=True, blank=True)
-    address = models.TextField(null=True, blank=True)
-    #تاریخچه درمان 
-    medical_history = models.TextField(null=True, blank=True)
-    #آلرژی ها
-    allergies = models.TextField(null=True, blank=True)
-    #دارو های فعلی
-    current_medications = models.TextField(null=True, blank=True)
-    #درمان های قبلی
-    previous_treatments = models.TextField(null=True, blank=True)
-    
-    image_file = models.ImageField(upload_to='radiology_images/')  # محل ذخیره تصویر
-    upload_date = models.DateTimeField(auto_now_add=True)  # تاریخ آپلود
-    description = models.TextField(blank=True, null=True)
-    def __str__(self):
-        return self.full_name
-    class Meta:
-        verbose_name = "Patient Record"
-        
 
 class DentalClinicServices(models.Model):
+    Patient = models.ForeignKey(PatientRecord, on_delete=models.CASCADE)
     # Treatment Services
     cavity_filling = models.BooleanField(default=False, verbose_name="Cavity Filling")
     root_canal = models.BooleanField(default=False, verbose_name="Root Canal")
@@ -75,13 +42,3 @@ class DentalClinicServices(models.Model):
 
     def __str__(self):
         return "Dental Clinic Services"
-
-
-class ServiceSchedule(models.Model):
-    service = models.ForeignKey(DentalClinicServices, on_delete=models.CASCADE, related_name="schedules")
-    start_time = models.TimeField(verbose_name="Start Time")
-    end_time = models.TimeField(verbose_name="End Time")
-    available_date = models.DateField(verbose_name="Available Date")
-    
-    def __str__(self):
-        return f"{self.service.service_name} - {self.available_date} ({self.start_time} to {self.end_time})"

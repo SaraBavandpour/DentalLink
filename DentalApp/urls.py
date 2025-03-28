@@ -1,11 +1,9 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import PersonView
+from .views import CombinedView
 
-
-from . import views
 
 urlpatterns = [
-    path('PersonView/', PersonView.as_view(), name='PersonView')
+    path('PersonView/', CombinedView.as_view(), name='PersonView')
    
 ]
