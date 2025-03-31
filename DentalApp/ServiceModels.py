@@ -1,11 +1,16 @@
 from django.db import models
-
 from .UserModels import PatientRecord
 
 
-
 class DentalClinicServices(models.Model):
-    Patient = models.ForeignKey(PatientRecord, on_delete=models.CASCADE)
+    service_id = models.AutoField(
+        primary_key=True,  # می‌توانید آن را به عنوان کلید اصلی تنظیم کنید
+        editable=False  # کاربر نمی‌تواند این فیلد را تغییر دهد
+    )
+    Patient = models.ForeignKey(  # تغییر از OneToOne به ForeignKey
+        PatientRecord,
+        on_delete=models.CASCADE
+    )
     # Treatment Services
     cavity_filling = models.BooleanField(default=False, verbose_name="Cavity Filling")
     root_canal = models.BooleanField(default=False, verbose_name="Root Canal")
